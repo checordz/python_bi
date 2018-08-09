@@ -129,7 +129,7 @@ PieData = [StartedRate, ConversionRate, Authenticated, ApprovalOnlineRate]
 
 # app.layout = html.Div(children=[
 layout = html.Div(children=[
-    html.H1('Dashboard'),
+    html.H1('Cards Acquisition - General Dashboard'),
     html.Div([
         html.Div(
             className='row',

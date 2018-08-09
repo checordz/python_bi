@@ -22,6 +22,8 @@ colors1 = {
 
 # campaign data
 df = pd.read_csv('./CardsAcquisition_Funnel/funnel.csv')
+df_fechas = pd.read_csv('./CardsAquisition/ENTREGA_AL20JUN18_Limpia.csv')
+df_fechas['FCH_ING'] = pd.to_datetime(df_fechas['FCH_ING'], format="%d/%m/%Y")
 
 # color for each segment
 colors = ['#3973ac', '#993399', '#669900', '#b32d00', '#7300e6', '#cccc00']
@@ -211,7 +213,21 @@ def create_data_with_dataframe(cleaned_df):
 
 # app.layout = html.Div(style={'backgroundColor': 'rgba(9, 36, 71, 1)', 'color': colors1['text']}, children=[
 layout = html.Div(children=[
-    html.H1('Middle Funnel'),
+    html.Div([
+        html.H1('Middle Funnel')
+    ], className = 'row'),
+    html.Div([
+        html.H6('Start Date - End Date:')
+    ], className = 'row'),
+    html.Div([
+        dcc.DatePickerRange(
+            id='MiddleFunnelDatePicker',
+            min_date_allowed=df_fechas['FCH_ING'].min(axis=0),
+            max_date_allowed=df_fechas['FCH_ING'].max(axis=0),
+            start_date=df_fechas['FCH_ING'].min(axis=0),
+            end_date=df_fechas['FCH_ING'].max(axis=0),
+        ),
+    ], className='row mb-2'),
     html.Div(children = [
             dcc.Dropdown(
                 id='dropdown-menu',
@@ -228,9 +244,9 @@ layout = html.Div(children=[
                 multi=True
             ),
             html.Div(id='category-output', className='six columns'),
-        ]),
+        ], className = 'row'),
         html.Div(
-            className='eight columns',
+            # className='eight columns',
             children=dcc.Graph(id='general-funnel')
         )
     ], className='container-fluid pb-5')
@@ -247,7 +263,7 @@ def update_output(value):
     print(df)
 
     layout = go.Layout(
-        title="<b>Segmented Funnel Chart</b>",
+        # title="<b>Segmented Funnel Chart</b>",
         titlefont=dict(
             size=20,
             # color='rgb(230,230,230)'
