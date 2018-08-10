@@ -7,6 +7,8 @@ from dash.dependencies import Input, Output, State
 import base64
 
 # app = dash.Dash()
+#df_table = pd.read_csv('/Users/memomora/Coding/Python/bi_tool 2/CardsAcquisition_Funnel/funnel.csv')
+
 trace1 = go.Bar(
     y=['Visits'],
     x=[20],
@@ -57,16 +59,19 @@ TableData = go.Table(
         align=['center']
     ),
     cells=dict(
-        values=[
-            ['Visits', 'Start', 'Completed', 'Authenticated', 'Authorized Online'],
-            [3414072, 1336894, 425313, 256791, 55016],
-            [1593452, 700838, 186528, 115887, 22890],
-            [674844, 233190, 166754, 110383, 27481],
-            [549130, 192956, 39260, 17979, 3341],
-            [35919, 13971, 1308, 810, 171],
-            [503224, 185844, 30015, 11115, 1081],
-            [57505, 10096, 1448, 617, 52]
-        ],
+         values=[
+             ['Visits', 'Start', 'Completed', 'Authenticated', 'Authorized Online', 'Delivered', 'Booked'],
+             [3414072, 1336894, 425313, 256791, 55016, 34495, 33502],
+             [1593452, 700838, 186528, 115887, 22890, 12091, 14118],
+             [674844, 233190, 166754, 110383, 27481, 19211, 15154],
+             [549130, 192956, 39260, 17979, 3341, 2413, 2554],
+             [35919, 13971, 1308, 810, 171, 113, 1011],
+             [503224, 185844, 30015, 11115, 1081, 628, 619],
+             [57505, 10096, 1448, 617, 52, 39, 46],
+
+         ],
+        #values=[df_table[k].tolist() for k in df_table.columns[1:]],
+        format=[None] + [", .2f"] * 2,
         align=['center']
     ),
     columnwidth=[18,10]
@@ -74,7 +79,7 @@ TableData = go.Table(
 
 Pielabels=['Affiliates', 'Organic', 'Search', 'XSell', 'Social', 'Display']
 
-StartedRate = go.Pie(opacity=0.85,
+Started = go.Pie(opacity=0.85,
                      labels=Pielabels,
                      values=[700, 233, 192, 13, 185, 10],
                      hole=0.3,
@@ -86,7 +91,7 @@ StartedRate = go.Pie(opacity=0.85,
                      textinfo='percent',
                      textfont=dict(color='black')
              )
-ConversionRate = go.Pie(opacity=0.95,
+Conversion = go.Pie(opacity=0.95,
                         labels=Pielabels,
                         values=[186, 166, 39, 10, 30, 10],
                         hole=0.3,
@@ -111,7 +116,7 @@ Authenticated = go.Pie(opacity=0.95,
                        textfont=dict(color='black')
 
                )
-ApprovalOnlineRate = go.Pie(opacity=0.95,
+ApprovalOnline = go.Pie(opacity=0.95,
                             labels=Pielabels,
                             values=[22,27,3,0.2,1,0.05],
                             hole=0.3,
@@ -125,7 +130,35 @@ ApprovalOnlineRate = go.Pie(opacity=0.95,
 
                             )
 
-PieData = [StartedRate, ConversionRate, Authenticated, ApprovalOnlineRate]
+Delivered = go.Pie(opacity=0.95,
+                            labels=Pielabels,
+                            values=[12,19,2.4,1,0.63,0.04],
+                            hole=0.3,
+                            pull=0.15,
+                            marker={'colors': ['rgb(68,126,182)', 'rgb(253,134,63)', 'rgb(80,168,73)',
+                                               'rgb(215,65,70)', 'rgb(153,111,191)', 'rgb(145,99,92)'],
+                                    'line': dict(width=0)},
+                            hoverinfo='label+value',
+                            textinfo='percent',
+                            textfont=dict(color='black')
+
+                            )
+
+Booked = go.Pie(opacity=0.95,
+                            labels=Pielabels,
+                            values=[14.1,15.1,2.5,1.01,0.6,0.046],
+                            hole=0.3,
+                            pull=0.15,
+                            marker={'colors': ['rgb(68,126,182)', 'rgb(253,134,63)', 'rgb(80,168,73)',
+                                               'rgb(215,65,70)', 'rgb(153,111,191)', 'rgb(145,99,92)'],
+                                    'line': dict(width=0)},
+                            hoverinfo='label+value',
+                            textinfo='percent',
+                            textfont=dict(color='black')
+
+                            )
+
+PieData = [Started, Conversion, Authenticated, ApprovalOnline, Delivered, Booked]
 
 # app.layout = html.Div(children=[
 layout = html.Div(children=[
@@ -161,7 +194,7 @@ layout = html.Div(children=[
             className='col',
             children=dcc.Graph(id='Start',
                                figure=go.Figure(data=[PieData[0]],
-                                                layout=go.Layout(title="<b>% Started Rate</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
+                                                layout=go.Layout(title="<b>Started</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
 
                                                 )
                                )
@@ -170,18 +203,19 @@ layout = html.Div(children=[
             className='col',
             children=dcc.Graph(id='Conv',
                                figure=go.Figure(data=[PieData[1]],
-                                                layout=go.Layout(title="<b>% Conversion Rate</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
+                                                layout=go.Layout(title="<b>Conversion</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
 
                                                 )
                                )
         )
     ], className='row'),
-        html.Div([
+
+    html.Div([
         html.Div(
             className='col',
             children=dcc.Graph(id='Auth',
                                figure=go.Figure(data=[PieData[2]],
-                                                layout=go.Layout(title="<b>% Authenticated</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
+                                                layout=go.Layout(title="<b>Authenticated</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
 
                                                 )
                                )
@@ -190,12 +224,36 @@ layout = html.Div(children=[
             className='col',
             children=dcc.Graph(id='Approv',
                                figure=go.Figure(data=[PieData[3]],
-                                                layout=go.Layout(title="<b>% Approval Online Rate</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
+                                                layout=go.Layout(title="<b>Approval Online</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
 
                                                 )
                                )
         )
     ], className='row'),
+
+    html.Div([
+        html.Div(
+            className='col',
+            children=dcc.Graph(id='Delivered',
+                                figure=go.Figure(data=[PieData[4]],
+                                                layout=go.Layout(title="<b>Delivered</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
+
+                                                )
+                                )
+        ),
+        html.Div(
+            className='col',
+            children=dcc.Graph(id='Booked',
+                                figure=go.Figure(data=[PieData[5]],
+                                                layout=go.Layout(title="<b>Booked</b>", paper_bgcolor='rgba(255,255,255,0)', plot_bgcolor='rgba(255,255,255,0)'),
+
+                                                )
+                                )
+        )
+    ], className='row'),
+
+
+
     html.Div(
         className='row',
         children = html.Div(

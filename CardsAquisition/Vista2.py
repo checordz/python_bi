@@ -15,12 +15,6 @@ Products = {'AffinityCard': 1, 'AffinityCardZara': 2, 'BestBuyBanamex': 3, 'Best
             'Marti_PremiumCitibanamex': 18, 'OfficeDepotBanamex': 19, 'OroMastercard': 20, 'Platinum': 21,
             'Teleton': 22, 'TheHomeDepot': 23}
 
-
-
-
-
-
-
 #####       Layout      ######
 
 # app = dash.Dash()
@@ -65,6 +59,16 @@ layout = html.Div(children=[
             max_date_allowed=df['FCH_ING'].max(axis=0),
             start_date=df['FCH_ING'].min(axis=0),
             end_date=df['FCH_ING'].max(axis=0),
+        ),
+        dcc.Dropdown(
+            id='ProdClassDrop',
+            options=[
+                {'label': 'Bancarias', 'value': 'BANCARIAS'},
+                {'label': 'Coemitidas', 'value': 'COEMITIDAS'},
+                {'label': 'Premium', 'value': 'PREMIUM'},
+            ],
+            multi=True,
+            value=['BANCARIAS', 'COEMITIDAS', 'PREMIUM'],
         ),
         html.Div(id='ProductBarDiv')
     ]),
@@ -216,9 +220,11 @@ def UpdateProductFamilyGraph(start_date, end_date):
     dash.dependencies.Output('ProductBarDiv', 'children'),
     [
         dash.dependencies.Input('ProductDatePickerRange', 'start_date'),
-        dash.dependencies.Input('ProductDatePickerRange', 'end_date')
+        dash.dependencies.Input('ProductDatePickerRange', 'end_date'),
+        dash.dependencies.Input('ProdClassDrop', 'value')
     ])
-def UpdateProductGraph(start_date, end_date):
+def UpdateProductGraph(start_date, end_date, value):
+    print(value)
     #####       Producto    ######
     y = [df[(df['PRODUCTO_DESC'] == 1) & (df['FCH_ING'] <= end_date) & (df['FCH_ING'] >= start_date)].__len__(),
          df[(df['PRODUCTO_DESC'] == 2) & (df['FCH_ING'] <= end_date) & (df['FCH_ING'] >= start_date)].__len__(),

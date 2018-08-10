@@ -82,19 +82,38 @@ def clean_data(dataframe, value1):
     return cleaned_df
 
 
-print(cleaned_df)
+# print(cleaned_df)
 
-print(df)
+# print(df)
 
 def create_data_with_dataframe(cleaned_df):
     total_ch = [sum(row[1]) for row in cleaned_df.iterrows()]
+    # print(total_ch)
     abs_perc = [total_ch[i] / total_ch[0] * 100 for i in range(1, total_ch.__len__())]
     abs_perc.insert(0, 100)
+    # print(abs_perc)
     roundPerc_abs = [round(elem, 2) for elem in abs_perc]
-    rel_perc = [total_ch[i] / total_ch[i - 1] * 100 for i in range(1, total_ch.__len__())]
-    rel_perc.insert(0, 100)
 
+
+    # rel_perc = [total_ch[i] / total_ch[i - 1] * 100 for i in range(1, total_ch.__len__())]
+    rel_perc = []
+
+    for index, channel in enumerate(total_ch):
+        print(index)
+        print(channel)
+        print(total_ch[0])
+        print(total_ch[2])
+        if index < 3:
+            rel_perc.append(channel / total_ch[0] * 100)
+        else:
+            rel_perc.append(channel / total_ch[2] * 100)
+
+    # rel_perc.insert(0, 100)
     roundPerc_rel = [round(elem, 2) for elem in rel_perc]
+    print(" lksdjfklajsd fklhasd fklsadfjkladjsf ")
+    print(roundPerc_abs)
+    print(" lksdjfklajsd fklhasd fklsadfjkladjsf ")
+    print(roundPerc_rel)
     # paa cada callaback de box hacer un return con una variable booleana y un string dinamico y llamar a funcion que recicle codigos
 
     n_phase, n_seg = cleaned_df.shape
@@ -231,7 +250,7 @@ layout = html.Div(children=[
     html.Div(children = [
             dcc.Dropdown(
                 id='dropdown-menu',
-                className='five columns',
+                # className='container-fluid',
                 options=[
                     {'label': 'Affiliates', 'value': 0},
                     {'label': 'Organic', 'value': 1},
@@ -243,7 +262,7 @@ layout = html.Div(children=[
                 value=[0, 1, 2, 3, 4, 5],
                 multi=True
             ),
-            html.Div(id='category-output', className='six columns'),
+            # html.Div(id='category-output', className='six columns'),
         ], className = 'row'),
         html.Div(
             # className='eight columns',
@@ -257,10 +276,10 @@ layout = html.Div(children=[
     [dash.dependencies.Input('dropdown-menu', 'value')])
 def update_output(value):
     data, shapes = create_data_with_dataframe(clean_data(cleaned_df, value))
-    print('///////////////////////////////////////////////////////////////////////////////////////////////////////////')
-    print(cleaned_df)
-    print('/////////////////////////////////////////////////////////')
-    print(df)
+    # print('///////////////////////////////////////////////////////////////////////////////////////////////////////////')
+    # print(cleaned_df)
+    # print('/////////////////////////////////////////////////////////')
+    # print(df)
 
     layout = go.Layout(
         # title="<b>Segmented Funnel Chart</b>",
